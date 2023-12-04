@@ -1,0 +1,75 @@
+Create Table Doctor(-- Creates table for Doctor
+    ID INT UNSIGNED UNIQUE AUTO_INCREMENT NOT NULL,
+    FirstName VARCHAR(20) DEFAULT 'Doctor',
+    LastName VARCHAR(50) NOT NUll,
+    Specialization VARCHAR(50) NOT NULL,
+    BirthDate DATE,
+    Phone VARCHAR(14),
+    Username VARCHAR(20) UNIQUE,
+    Password VARCHAR(20),  
+    PRIMARY KEY(ID)
+    );
+
+CREATE TABLE Patient( -- Creates table for patient
+    ID INT UNSIGNED UNIQUE AUTO_INCREMENT NOT NULL,
+    FirstName VARCHAR(20),
+    LastName VARCHAR(50) NOT NUll,
+    BirthDate DATE,
+    Username VARCHAR(20) UNIQUE,
+    Password VARCHAR(20),
+    InsuranceID INT UNSIGNED,
+    DoctorID INT UNSIGNED,
+    Phone VARCHAR(14),
+    PRIMARY KEY (ID),
+    Foreign Key (DoctorID) REFERENCES Doctor(ID) on DELETE SET NULL,
+    Foreign Key (InsuranceID) REFERENCES InsuranceProvider(InsuranceID) ON DELETE SET NULL
+);
+
+CREATE TABLE Administrator(
+    Username VARCHAR(20) UNIQUE,
+    Password VARCHAR(20)
+);
+
+CREATE TABLE InsuranceProvider(
+InsuranceID INT UNSIGNED AUTO_INCREMENT,
+PRIMARY KEY (InsuranceID),
+ProviderName VARCHAR(30),
+Coverage DECIMAL(6,2)
+);
+
+CREATE TABLE Appointment(
+AppointmentID INT UNSIGNED AUTO_INCREMENT,
+PatientID INT UNSIGNED NOT NULL,
+DoctorID INT UNSIGNED NOT NULL,
+AppointmentDateTime DATETIME,
+AdditionalInformation VARCHAR(300),
+PRIMARY KEY (AppointmentID),
+FOREIGN KEY (DoctorID) REFERENCES Doctor(ID),
+FOREIGN KEY (PatientID) REFERENCES Patient(ID)
+);
+
+CREATE TABLE Visit(
+VisitID INT UNSIGNED AUTO_INCREMENT,
+PatientID INT UNSIGNED  NOT NULL,
+DoctorID INT UNSIGNED  NOT NULL,
+VisitDateTime DATETIME,
+Observations VARCHAR(300),
+Perscription VARCHAR(300),
+Treatment VARCHAR(300),
+AdditionalComments VARCHAR(500),
+PRIMARY KEY(VisitID),
+FOREIGN KEY (DoctorID) REFERENCES Doctor(ID),
+FOREIGN KEY (PatientID) REFERENCES Patient(ID)
+);
+
+CREATE TABLE Bill(
+BillID INT UNSIGNED AUTO_INCREMENT,
+PatientID INT UNSIGNED NOT NULL,
+InsuranceID INT UNSIGNED,
+BilledAmount DECIMAL(6,2),
+TotalAmountOwed DECIMAL(6,2),
+AmountPaid DECIMAL(6,2),
+PRIMARY KEY(BillID),
+FOREIGN KEY (PatientID) REFERENCES Patient(ID) ON DELETE CASCADE,
+FOREIGN KEY (InsuranceID) REFERENCES InsuranceProvider(InsuranceID) ON DELETE SET NULL
+);
